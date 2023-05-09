@@ -1,0 +1,1 @@
+Finally, we jion the corrected words into a string and prompt the user to enter the name of the output file. We then wite the corrected text to the output file using open() and write(), and print the reporet using the number of detected and corrected errors we calculated earlier.
