@@ -7,25 +7,58 @@ Created on Tue May  9 00:10:52 2023
 
 import re
 
-# Read in the corpus file and create a dictionary of words and their frequencies
+def clean_text(text):
+    # Remove non-alphabetical characters except hyphens and apostrophes within words
+    cleaned_text = re.sub(r'[^a-zA-Z\'\-]+', ' ', text)
+    # Convert text to lowercase
+    cleaned_text = cleaned_text.lower()
+    return cleaned_text
+
 def build_dictionary(file_path):
     word_frequency = {}
+    
     with open(file_path, 'r') as f:
-        for line in f:
-            line = line.lower().strip()
-            if line == 'end-of-corpus':
-                break
-            words = re.findall("[a-zA-Z'-]+", line)
-            for word in words:
-                if word in word_frequency:
-                    word_frequency[word] += 1
-                else:
-                    word_frequency[word] = 1
+        corpus_text = f.read()
+        cleaned_text = clean_text(corpus_text)
+        words = cleaned_text.split()
+        for word in words:
+            if word in word_frequency:
+                word_frequency[word] += 1
+            else:
+                word_frequency[word] = 1
     return word_frequency
 
+# Building the dictionary by filtering out low-frequency words
+def build_dictionary_without_noise(file_path, min_frequency=5):
+    word_frequency = {}
+    total_words = 0
+    with open(file_path, 'r') as f:
+        corpus_text = f.read()
+        cleaned_text = clean_text(corpus_text)
+        words = cleaned_text.split()
+        for word in words:
+            if word not in word_frequency:
+                word_frequency[word] = 1
+            else:
+                word_frequency[word] += 1
+            total_words += 1
+    
+    # Filter out words with low frequencies
+    filtered_word_frequency = {word: freq for word, freq in word_frequency.items() if freq >= min_frequency}
+    
+    return filtered_word_frequency
+
+# Example usage
+corpus_file = 'corpus.txt'
+dictionary1 = build_dictionary_without_noise(corpus_file, min_frequency=5)
+print("dictionary by filtering out low-frequency words")
+print(dictionary1)
+
 #Testing the dictionary Creation
-#word_frequency = build_dictionary('corpus.txt')
-#print(word_frequency)
+corpus_file = 'corpus.txt'
+dictionary = build_dictionary(corpus_file)
+print("Normal Dictionary")
+print(dictionary)
 
 # Calculate the Levenshtein distance between two strings
 def levenshtein_distance(str1, str2):

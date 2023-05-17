@@ -1,0 +1,1 @@
+finally we ion the corrected words into a string and prompt the user to enter the name of the output file we then bite the corrected text to the output file using open and write and print the report using the number of detected and corrected errors we calculated earlier
